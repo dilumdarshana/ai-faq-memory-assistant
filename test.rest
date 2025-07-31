@@ -1,0 +1,30 @@
+###
+POST http://localhost:3000/api/create-index
+Content-Type: application/json
+
+###
+POST http://localhost:3000/api/ingest
+Content-Type: application/json
+
+[
+  {
+    "question": "What is your return policy?",
+    "answer": "We offer a 30-day money-back guarantee on all purchases."
+  }
+]
+
+###
+POST http://localhost:3000/api/ask
+Content-Type: application/json
+
+{
+  "question": "What is your return policy?"
+}
+
+###
+POST http://localhost:3000/api/list
+Content-Type: application/json
+
+{
+  "index": "idx:faq_vector"
+}
