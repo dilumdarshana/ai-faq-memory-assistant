@@ -8,8 +8,8 @@ Content-Type: application/json
 
 [
   {
-    "question": "What is your return policy?",
-    "answer": "We offer a 30-day money-back guarantee on all purchases."
+    "question": "How can I reset my password?",
+    "answer": "Click on 'Forgot Password' on the login page and follow the instructions."
   }
 ]
 
@@ -18,7 +18,7 @@ POST http://localhost:3000/api/ask
 Content-Type: application/json
 
 {
-  "question": "What is your return policy?"
+  "question": "I lost my password?"
 }
 
 ###
