@@ -1,0 +1,23 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "REDIS_HOST=$REDIS_HOST" >> .env.production
+        - echo "REDIS_PORT=$REDIS_PORT" >> .env.production
+        - echo "REDIS_USERNAME=$REDIS_USERNAME" >> .env.production
+        - echo "REDIS_PASSWORD=$REDIS_PASSWORD" >> .env.production
+        - echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> .env.production
+        - corepack enable
+        - corepack prepare pnpm@latest --activate
+        - pnpm install
+    build:
+      commands:
+        - pnpm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - node_modules/**/*

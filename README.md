@@ -4,7 +4,7 @@ This project is a highly efficient FAQ system built using Redis 8 as a vector da
 
 ## Features
 
-- **Vector Database**: Utilizes Redis for storing and querying vector embeddings for efficient similarity searches.
+- **Vector Database**: Utilises Redis for storing and querying vector embeddings for efficient similarity searches.
 - **RAG Pattern**: Combines retrieval-based methods with generative AI to provide accurate and context-aware answers.
 - **OpenAI Integration**: Leverages OpenAI's embedding models for generating high-dimensional vector representations of questions.
 - **Next.js Framework**: Built with Next.js for server-side rendering and API routes.
