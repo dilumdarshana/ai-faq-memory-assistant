@@ -29,7 +29,7 @@ export async function findSimilarities(query: string) {
 
     const results = await client.ft.search(
       'idx:faq_vector',
-      '*=>[KNN 10 @embedding $query_vec AS score]', {
+      '*=>[KNN 3 @embedding $query_vec AS score]', {
       PARAMS: {
         'query_vec': queryBuffer
       },
@@ -38,7 +38,7 @@ export async function findSimilarities(query: string) {
         from: 0,
         size: 10,
       },
-      RETURN: ['question', 'answer'],
+      RETURN: ['question', 'answer', 'score'],
       DIALECT: 2,
     });
 
