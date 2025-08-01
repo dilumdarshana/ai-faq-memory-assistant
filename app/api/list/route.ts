@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     await client.connect();
 
     // Search the Redis index for records
-    const records = await client.ft.search('idx:faq_vector', '*', {
+    const records = await client.ft.search(index, '*', {
       LIMIT: {
         from: 0, // Start from the first record
         size: 10, // Limit the number of records to 10

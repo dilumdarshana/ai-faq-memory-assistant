@@ -24,6 +24,7 @@ export default function Home() {
       const data = await res.json();
       setAnswer(data.answer || 'No answer found.');
     } catch (err) {
+      console.error(err);
       setAnswer('Something went wrong.');
     } finally {
       setLoading(false);
