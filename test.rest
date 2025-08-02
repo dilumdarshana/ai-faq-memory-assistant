@@ -8,8 +8,8 @@ Content-Type: application/json
 
 [
   {
-    "question": "How can I reset my password?",
-    "answer": "Click on 'Forgot Password' on the login page and follow the instructions."
+    "question": "When will the winners be announced?",
+    "answer": "The winners will be announced on August 21, 2025."
   }
 ]
 
@@ -26,5 +26,5 @@ POST http://localhost:3000/api/list
 Content-Type: application/json
 
 {
-  "index": "idx:faq_vector"
+  "index": "idx:faq_result"
 }

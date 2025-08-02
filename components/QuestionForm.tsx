@@ -20,7 +20,7 @@ export function QuestionForm({ onAsk, loading }: Props) {
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <textarea
         className="p-4 border border-gray-300 rounded resize-none h-24"
-        placeholder="Ask a question..."
+        placeholder="Ask any question about the Redis Challenge..."
         value={input}
         onChange={(e) => setInput(e.target.value)}
         disabled={loading}

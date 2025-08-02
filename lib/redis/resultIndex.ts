@@ -22,7 +22,7 @@ export const createResultIndex = async () => {
     await client.ft.create(indexName, {
       '$.question': {
         type: 'TEXT', // Text field for the question
-        AS: 'content' // Alias for easier querying
+        AS: 'question', // Alias for easier querying
       },
       '$.answer': {
         type: 'TEXT', // Text field for the answer
@@ -30,19 +30,20 @@ export const createResultIndex = async () => {
       },
       '$.source': {
         type: 'TAG', // Tag field for the source
-        AS: 'source'
+        AS: 'source',
       },
       '$.score': {
         type: 'NUMERIC', // Numeric field for the score
-        AS: 'score'
+        AS: 'score',
       },
       '$.createdAt': {
-        type: 'TEXT', // Text field for the creation date
-        AS: 'createdAt'
+        type: 'NUMERIC', // NUMERIC field for the creation date
+        AS: 'createdAt',
+        SORTABLE: true,
       },
     }, {
       ON: 'JSON', // Operate on JSON documents
-      PREFIX: 'result:' // Prefix for keys in the index
+      PREFIX: 'result:',// Prefix for keys in the index
     });
 
     await client.quit(); // Disconnect the client after creating the index

@@ -2,6 +2,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRedisClient } from '@/lib/redis/client'; // Redis client creation utility
 
+type RecordValue = {
+  question: string;
+  answer: string;
+  createdAt: string;
+}
+
+type DocumentRecord = {
+  id: string;
+  value: RecordValue;
+}
+type RecordsResponse = {
+  total: number;
+  documents: DocumentRecord[];
+}
+
 // Initialize Redis client
 const client = createRedisClient();
 
@@ -15,16 +30,21 @@ export async function POST(req: NextRequest) {
     await client.connect();
 
     // Search the Redis index for records
-    const records = await client.ft.search(index, '*', {
+    const { documents } = await client.ft.search(index, '*', {
       LIMIT: {
         from: 0, // Start from the first record
         size: 10, // Limit the number of records to 10
       },
-      RETURN: ['question', 'answer'] // Return only the question and answer fields
-    });
+      SORTBY: {
+        BY: 'createdAt',
+        DIRECTION: 'DESC',
+      }, // Sort results by creation date
+      DIALECT: 2, // Use dialect 2 for advanced query syntax
+      RETURN: ['question', 'answer', 'createdAt'] // Return only the question and answer fields
+    }) as RecordsResponse;
 
     // Return the retrieved records as a JSON response
-    return NextResponse.json({ records });
+    return NextResponse.json(documents);
   } catch (error) {
     // Handle errors and return a 500 status
     console.error('List data error:', error);

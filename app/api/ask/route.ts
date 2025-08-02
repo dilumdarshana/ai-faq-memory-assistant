@@ -7,6 +7,13 @@ import { StringOutputParser } from '@langchain/core/output_parsers';
 import { createRedisClient } from '@/lib/redis/client';
 import { findSimilarities } from '@/lib/embeddings';
 import { createHash } from '@/lib/utils';
+interface CachedAnswer {
+  question: string;
+  answer: string;
+  source: 'web' | 'db' | 'faq' | string;
+  score: number;
+  createdAt: string; // or Date if you convert it
+}
 
 // Initialize Redis client
 const client = createRedisClient();
@@ -48,10 +55,12 @@ export async function POST(req: NextRequest) {
     const cacheKey = `result:${hash}`;
 
     // Check if the response is already cached in Redis
-    const cached = await client.get(cacheKey);
+    // const cached = await client.get(cacheKey);
+    const cached = await client.json.get(cacheKey, { path: '$' }) as unknown as CachedAnswer;
+
     if (cached) {
       console.log('Cache hit for question');
-      return NextResponse.json({ answer: cached });
+      return NextResponse.json({ answer: cached.answer });
     }
 
     // If not cached, search for similar documents in Redis vector index
@@ -64,9 +73,8 @@ export async function POST(req: NextRequest) {
 
     // Create a prompt template for the chat model
     const prompt = PromptTemplate.fromTemplate(`
-      You are a helpful FAQ assistant. Answer the user's questions based only on the following context.
-      If the answer is not in the context, reply politely that you do not have that information.
-      Do not mention that the answer came from the context.
+      You are a friendly and helpful FAQ assistant. Answer the user's question using the context below. 
+      Feel free to paraphrase and make the answer conversational, but do not include information not in the context.
       ===================
       Context: {context}
       ===================
@@ -91,7 +99,15 @@ export async function POST(req: NextRequest) {
     const output = await chain.invoke({});
 
     // Cache the response in Redis for future use (expires in 15 minutes)
-    await client.set(cacheKey, output, { EX: 60 * 15 });
+    await client.json.set(cacheKey, '$', {
+      question,
+      answer: output,
+      source: 'web',
+      score: 1,
+      createdAt: Math.floor(Date.now() / 1000), // Store current timestamp as createdAt
+    });
+    await client.expire(cacheKey, 60 * 15);  // 15 minutes TTL
+    // await client.set(cacheKey, output, { EX: 60 * 15 });
 
     // Return the generated response
     return NextResponse.json({ answer: output });
