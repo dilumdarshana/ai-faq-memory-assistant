@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
       score: 1,
       createdAt: Math.floor(Date.now() / 1000), // Store current timestamp as createdAt
     });
-    await client.expire(cacheKey, 60 * 15);  // 15 minutes TTL
+    await client.expire(cacheKey, 60 * 60);  // 15 minutes TTL
     // await client.set(cacheKey, output, { EX: 60 * 15 });
 
     // Return the generated response
