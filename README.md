@@ -24,6 +24,10 @@ This project is a highly efficient FAQ system built using Redis 8 as a vector da
    - The RAG pattern is used to combine the retrieved context with a generative AI model to produce a final answer.
    - Frequently accessed results are cached in Redis to improve subsequent query performance.
 
+## Design
+
+<img width="950" height="650" alt="Image" src="https://github.com/user-attachments/assets/b50e9c3f-d514-4cac-a821-e4368e41f244" />
+
 ## Installation
 
 1. Clone the repository:
