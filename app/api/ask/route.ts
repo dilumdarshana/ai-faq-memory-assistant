@@ -36,8 +36,18 @@ const chtModel = new ChatOpenAI({
   temperature: 0.7, // Controls randomness in responses
 });
 
+// Allowed referer for security
+const ALLOWED_REFERER = 'https://master.d15ripqxac0b7u.amplifyapp.com';
+
 // Define the POST handler for the API route
 export async function POST(req: NextRequest) {
+  const referer = req.headers.get('referer');
+
+  // Check if the request comes from an allowed referer
+  if (!referer || !referer.startsWith(ALLOWED_REFERER)) {
+    return NextResponse.json({ error: 'Unauthorized request' }, { status: 403 });
+  }
+
   try {
     // Parse the question from the request body
     const { question } = await req.json();
@@ -73,14 +83,12 @@ export async function POST(req: NextRequest) {
 
     // Create a prompt template for the chat model
     const prompt = PromptTemplate.fromTemplate(`
-      You are a friendly and helpful FAQ assistant. Answer the user's question using the context below. 
-      Feel free to paraphrase and make the answer conversational, but do not include information not in the context.
+      You are a friendly and helpful FAQ assistant. Always base your answer strictly on the context provided below — do not use any outside knowledge or make assumptions. Paraphrase where helpful and keep your tone conversational, but never go beyond the given information.
       ===================
-      Context: {context}
+      Context:
+      {context}
       ===================
-      
       User: {question}
-      
       Assistant:
     `);
 
