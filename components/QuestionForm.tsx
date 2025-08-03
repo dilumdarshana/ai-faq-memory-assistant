@@ -16,6 +16,16 @@ export function QuestionForm({ onAsk, loading }: Props) {
     onAsk(input.trim());
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!input.trim()) return;
+      onAsk(input.trim());
+    } else if (e.key === 'Enter' && e.shiftKey) {
+      setInput((prev) => prev.trimEnd());
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <textarea
@@ -23,6 +33,7 @@ export function QuestionForm({ onAsk, loading }: Props) {
         placeholder="Ask any question about the Redis Challenge..."
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        onKeyDown={handleKeyDown}
         disabled={loading}
       />
       <button

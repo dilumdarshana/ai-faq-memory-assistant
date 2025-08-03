@@ -8,8 +8,8 @@ Content-Type: application/json
 
 [
   {
-    "question": "When will the winners be announced?",
-    "answer": "The winners will be announced on August 21, 2025."
+    "question": "What is this challenge about?",
+    "answer": "Running through August 10, the Redis AI Challenge is all about showing how Redis can power the next generation of intelligent, real-time applications. Whether you're passionate about AI or eager to explore what Redis can do beyond caching, this challenge has a path for you."
   }
 ]
 
