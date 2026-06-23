@@ -114,6 +114,40 @@ app/
 - Admin page to add question/answer
 - Integrate additional vector search algorithms.
 
+## Troubleshooting
+
+### Redis indexes must be created first
+
+Call `POST /api/create-index` before ingesting or querying. It creates two RediSearch indexes:
+
+| Index | Prefix | Fields |
+|-------|--------|--------|
+| `idx:faq_vector` | `vector:` | question, answer, embedding (1536d HNSW COSINE) |
+| `idx:faq_result` | `result:` | question, answer, source, score, createdAt |
+
+### Rebuilding indexes after schema changes
+
+If you change an index schema (e.g., add a field), drop and recreate the index, then re-ingest:
+
+```bash
+# List existing indexes
+docker exec <container> redis-cli -a '<password>' FT._LIST
+
+# Drop an index and its documents (add DD to delete documents)
+docker exec <container> redis-cli -a '<password>' FT.DROPINDEX idx:faq_result DD
+
+# Verify the index is removed
+docker exec <container> redis-cli -a '<password>' FT._LIST
+```
+
+Then call `POST /api/create-index` to recreate them.
+
+### Common issues
+
+- **`/api/list` returns empty**: Make sure you ingeested FAQs *after* creating the index. The ingeest route now writes to both `vector:*` (for similarity search) and `result:*` (for listing). Old ingeested data only has `vector:*` records.
+- **`/api/ask` returns 401**: The referer check is commented out in `app/api/ask/route.ts`. Uncomment it before deploying to production.
+- **`Error: The client is closed`**: Indicates Redis connection failed (wrong host/port/auth or Redis not running). Verify Docker and `.env` values.
+
 ## License
 
 This project is licensed under the MIT License.
