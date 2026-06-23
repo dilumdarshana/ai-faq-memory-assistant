@@ -48,8 +48,18 @@ export async function POST(req: NextRequest) {
             embedding: embeddingArray, // Embedding vector for the question
           };
 
-          // Store the document as a JSON object in Redis
+          // Store the vector document in Redis
           await client.json.set(key, '$', document);
+
+          // Also write a result record so /api/list can find it
+          const resultKey = `result:${hash}`;
+          await client.json.set(resultKey, '$', {
+            question,
+            answer,
+            source: 'faq',
+            score: 1,
+            createdAt: Math.floor(Date.now() / 1000),
+          });
         })
       );
     } catch (error) {
@@ -64,7 +74,8 @@ export async function POST(req: NextRequest) {
     console.error('Ingest Error:', error);
     return NextResponse.json({ error: 'Failed to ingest FAQs' }, { status: 500 });
   } finally {
-    // Ensure the Redis client is disconnected
-    await client.quit();
+    if (client.isOpen) {
+      await client.quit();
+    }
   }
 }

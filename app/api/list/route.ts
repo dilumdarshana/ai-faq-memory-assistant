@@ -35,10 +35,6 @@ export async function POST(req: NextRequest) {
         from: 0, // Start from the first record
         size: 10, // Limit the number of records to 10
       },
-      SORTBY: {
-        BY: 'createdAt',
-        DIRECTION: 'DESC',
-      }, // Sort results by creation date
       DIALECT: 2, // Use dialect 2 for advanced query syntax
       RETURN: ['question', 'answer', 'createdAt'] // Return only the question and answer fields
     }) as RecordsResponse;
@@ -50,7 +46,8 @@ export async function POST(req: NextRequest) {
     console.error('List data error:', error);
     return NextResponse.json({ error: 'Failed to listing FAQs' }, { status: 500 });
   } finally {
-    // Ensure the Redis client is disconnected
-    await client.quit();
+    if (client.isOpen) {
+      await client.quit();
+    }
   }
 }

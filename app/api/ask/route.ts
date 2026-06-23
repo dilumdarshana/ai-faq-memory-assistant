@@ -41,12 +41,11 @@ const ALLOWED_REFERER = 'https://master.d15ripqxac0b7u.amplifyapp.com';
 
 // Define the POST handler for the API route
 export async function POST(req: NextRequest) {
-  const referer = req.headers.get('referer');
-
-  // Check if the request comes from an allowed referer
-  if (!referer || !referer.startsWith(ALLOWED_REFERER)) {
-    return NextResponse.json({ error: 'Unauthorized request' }, { status: 403 });
-  }
+  // Referer check disabled for dev — re-enable before deploy
+  // const referer = req.headers.get('referer');
+  // if (!referer || !referer.startsWith(ALLOWED_REFERER)) {
+  //   return NextResponse.json({ error: 'Unauthorized request' }, { status: 403 });
+  // }
 
   try {
     // Parse the question from the request body

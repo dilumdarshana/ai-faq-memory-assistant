@@ -46,6 +46,8 @@ export const createVectorIndex = async () => {
     console.error('Error creating vector index:', error); // Log any errors
     throw new Error('Failed to create vector index'); // Throw an error if index creation fails
   } finally {
-    await client.quit(); // Ensure the client is disconnected
+    if (client.isOpen) {
+      await client.quit();
+    }
   }
 };

@@ -52,6 +52,8 @@ export const createResultIndex = async () => {
     console.error('Error creating result index:', error); // Log any errors
     throw new Error('Failed to create result index'); // Throw an error if index creation fails
   } finally {
-    await client.quit(); // Ensure the client is disconnected
+    if (client.isOpen) {
+      await client.quit(); // Ensure the client is disconnected
+    }
   }
 };
